@@ -1,0 +1,13 @@
+{% extends 'articles/articles_list.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>{{article.title}}</h1>
+    <a href="/articles" >Вернуться назад</a>
+    <div>
+        <img src= "https://lmsoft.ru/upload/iblock/687/68765a783bc95223048a0a8bfcde4a56.png"alt="Изображение к статье">
+            <p class="mt-3">{{article.create_date}}</p>
+            <p>{{article.text}}</p>
+    </div>
+</div>
+{% endblock %}

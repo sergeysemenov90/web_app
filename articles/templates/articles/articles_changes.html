@@ -1,0 +1,65 @@
+{% extends 'articles/articles_list.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="mt-2">Администрирование статей</h1>
+<h3 class="mt-5">Добавление статьи</h3>
+
+
+{%if messages %}
+<div class="alert alert-success">
+    {% for m in messages %}
+        {{m}}
+    {% endfor %}</div>
+{%endif%}
+
+{% if update %}
+<a href="/articles/changes">Вернуться назад</a>
+<form id="update" method="post" class="mt-5">
+    {% csrf_token%}
+    {{form}}
+    <button type="submit" class="btn btn-primary mb-2">Обновить</button>
+</form>
+
+{%else%}
+<form id="add_form" method="post" class="mt-5">
+    {% csrf_token%}
+    {{form}}
+    <button type="submit" class="btn btn-primary mb-2">Сохранить</button>
+</form>
+
+
+<table class="table mt-5">
+    <thead>
+    <tr>
+        <th scope="col">id</th>
+        <th scope="col">Название</th>
+        <th scope="col">Дата создания</th>
+        <th scope="col">Редактировать</th>
+        <th scope="col">Удалить</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for article in articles%}
+    <tr>
+        <th scope="row">{{article.pk}}</th>
+        <td>{{article.title}}</td>
+        <td>{{article.create_date}}</td>
+        <td><a href="{% url 'article_update' article.id%}">Редактировать</a></td>
+        <td>
+            <form id="delete_form" action="{% url 'articles_delete' article.id %}" method="post">{% csrf_token %}</form>
+            <a href="javascript:void()" onclick="delete_question()">Удалить</a>
+            <script>
+                function delete_question() {
+                    if (confirm('Удалить статью: "{{article.title}}"?')) {
+                        document.getElementById("delete_form").submit()
+             }
+            }
+            </script>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{%endif%}
+{% endblock %}
