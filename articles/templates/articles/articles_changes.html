@@ -42,20 +42,26 @@
     <tbody>
     {% for article in articles%}
     <tr>
-        <th scope="row">{{article.pk}}</th>
+        <th scope="row">{{article.id}}</th>
         <td>{{article.title}}</td>
-        <td>{{article.create_date}}</td>
+        <td>{{article.create_date|date:"d.m.Y"}} - {{article.author}}</td>
+        {% if request.user == article.author %}
         <td><a href="{% url 'article_update' article.id%}">Редактировать</a></td>
         <td>
-            <form id="delete_form" action="{% url 'articles_delete' article.id %}" method="post">{% csrf_token %}</form>
-            <a href="javascript:void()" onclick="delete_question()">Удалить</a>
+            <form id="delete_form{{article.id}}" action="{% url 'articles_delete' article.id %}" method="post">{% csrf_token %}</form>
+            <a href="javascript:void()" onclick="delete_question{{article.id}}()">Удалить</a>
             <script>
-                function delete_question() {
+                function delete_question{{article.id}}() {
                     if (confirm('Удалить статью: "{{article.title}}"?')) {
-                        document.getElementById("delete_form").submit()
+                        document.getElementById("delete_form{{article.id}}").submit()
              }
             }
             </script>
+        {% else %}
+        <td>Нет доступа</a></td>
+        <td>Нет доступа</a></td>
+        {% endif %}
+
         </td>
     </tr>
     {% endfor %}

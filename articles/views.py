@@ -1,7 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -24,14 +26,18 @@ class ArticleDetailView(DetailView):
 class SuccessMessageMixin:
     @property
     def success_msg(self):
-        return None
+        return False
 
     def form_valid(self, form):
         messages.success(self.request, self.success_msg)
-        return super(SuccessMessageMixin, self).form_valid(form)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return '%s?=id%s' % (self.success_url, self.object.id)
 
 
-class CreateArticleView(SuccessMessageMixin, CreateView):
+class CreateArticleView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    login_url = reverse_lazy('authentication_url')
     model = Articles
     template_name = 'articles/articles_changes.html'
     form_class = ArticleModelForm
@@ -42,8 +48,14 @@ class CreateArticleView(SuccessMessageMixin, CreateView):
         kwargs['articles'] = Articles.objects.all().order_by('-id')
         return super().get_context_data(**kwargs)
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
-class ArticleUpdateView(SuccessMessageMixin, UpdateView):
+
+class ArticleUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Articles
     template_name = 'articles/articles_changes.html'
     form_class = ArticleModelForm
@@ -54,11 +66,25 @@ class ArticleUpdateView(SuccessMessageMixin, UpdateView):
         kwargs['update'] = True
         return super().get_context_data(**kwargs)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.user != kwargs['instance'].author:
+            return self.handle_no_permission()
+        return kwargs
 
-class ArticleDeleteView(DeleteView):
+
+class ArticleDeleteView(LoginRequiredMixin, DeleteView):
     model = Articles
     template_name = 'articles/articles_changes.html'
     success_url = reverse_lazy('articles_changes')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.request.user != self.object.author:
+            return self.handle_no_permission()
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 
 class UserRegistrationView(CreateView):

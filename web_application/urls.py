@@ -20,12 +20,11 @@ from django.urls import path, include
 from articles.views import UserRegistrationView, UserAuthView, UserLogoutView
 from web_application.views import index
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('articles/', include('articles.urls')),
-    path('registration/', UserRegistrationView.as_view(), name = 'registration_url'),
-    path('authentication/', UserAuthView.as_view(), name = 'authentication_url'),
-    path('logout', UserLogoutView.as_view(), name = 'logout_url')
+    path('registration/', UserRegistrationView.as_view(), name='registration_url'),
+    path('authentication/', UserAuthView.as_view(), name='authentication_url'),
+    path('logout', UserLogoutView.as_view(), name='logout_url')
 ]

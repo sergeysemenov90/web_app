@@ -8,7 +8,7 @@ from .models import Articles
 class ArticleModelForm(forms.ModelForm):
     class Meta():
         model = Articles
-        fields = '__all__'
+        fields = ('title', 'text')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
