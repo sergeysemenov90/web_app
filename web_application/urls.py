@@ -16,8 +16,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-
-from articles.views import UserRegistrationView, UserAuthView, UserLogoutView
+from articles.views import UserRegistrationView, UserAuthView, UserLogoutView, APIArticlesList
 from web_application.views import index
 
 urlpatterns = [
@@ -26,5 +25,8 @@ urlpatterns = [
     path('articles/', include('articles.urls')),
     path('registration/', UserRegistrationView.as_view(), name='registration_url'),
     path('authentication/', UserAuthView.as_view(), name='authentication_url'),
-    path('logout', UserLogoutView.as_view(), name='logout_url')
+    path('logout', UserLogoutView.as_view(), name='logout_url'),
+
+    # Пректируем наш API
+    path('api/articles/', APIArticlesList.as_view())
 ]

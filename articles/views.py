@@ -7,8 +7,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from rest_framework import generics
+
 from .models import Articles
 from .forms import ArticleModelForm, UserRegistrationForm, UserAuthForm
+from .serializers import ArticlesSerializer
 
 
 class ArticlesListView(ListView):
@@ -115,3 +118,8 @@ class UserAuthView(LoginView):
 
 class UserLogoutView(LogoutView):
     next_page = reverse_lazy('articles_changes')
+
+
+class APIArticlesList(generics.ListAPIView):
+    queryset = Articles.objects.all()
+    serializer_class = ArticlesSerializer
