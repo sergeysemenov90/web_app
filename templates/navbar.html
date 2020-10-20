@@ -6,19 +6,25 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-link active" href="{% url 'articles_list' %}">Статьи<span class="sr-only">(current)</span></a>
-            <a class="nav-link" href="/weather">Погода</a>
-            <a class="nav-link" href="#">API</a>
 
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'logout_url' %}" class="btn btn-dark" role="button" aria-disabled="true">Выйти</a>
-            {% else %}
+
+            <a class="nav-link active" href="{% url 'articles_list' %}">Статьи<span class="sr-only">(current)</span></a>
+            <a class="nav-link active" href="{% url 'goals_url'%}">Цели и задачи</a>
+            <a class="nav-link active" href="#">API</a>
+
+            {% if not request.user.is_authenticated %}
+
             <a class="nav-link" href="{% url 'authentication_url' %}">Авторизация</a>
             <a class="nav-link" href="{% url 'registration_url' %}">Регистрация</a>
-            {% endif %}
-
-            {{request.user}}
         </div>
     </div>
+            {% else %}
+    </div>
+    </div>
+    <a class="nav-link active" href="#">User: {{request.user}}</a>
+    <a href="{% url 'logout_url' %}" class="btn btn-dark" role="button" aria-disabled="true">Выйти</a>
+            {% endif %}
+
+
 </nav>
 {% endblock %}

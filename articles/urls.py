@@ -7,4 +7,5 @@ urlpatterns = [
     path('changes/', CreateArticleView.as_view(), name='articles_changes'),
     path('delete/<pk>/', ArticleDeleteView.as_view(), name='articles_delete'),
     path('changes/<pk>/', ArticleUpdateView.as_view(), name='article_update'),
+
 ]

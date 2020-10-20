@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% extends 'index.html' %}
+
+<head>
+    {% block title %}
+    <title>Цели и задачи</title>
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+<div class="container mt-3 ml-5">
+    <h1>Мои цели и задачи</h1>
+
+    {%if messages %}
+    <div class="alert alert-success">
+        {% for m in messages %}
+        {{m}}
+        {% endfor %}
+    </div>
+
+
+{%endif%}
+    <form id="add_goal" method="post" class="mt-5">
+        {% csrf_token%}
+        {{form}}
+        <button type="submit" class="btn btn-primary mb-2 mt-4">Сохранить</button>
+    </form>
+
+
+    <ul class="list-group mt-5 container">
+        {% for goal in goals %}
+        <li class="list-group-item ">{{goal.title}}
+        <form id="delete_form{{goal.id}}" action="{% url 'delete_goal_url' goal.id %}" method="post">
+            {% csrf_token %}
+            <div class="float-right">
+            <button type="submit" class="btn btn-success btn-sm">Сделал!</button>
+            </div><br>
+        </form>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+
+
+{% endblock %}
+</body>
+</html>
